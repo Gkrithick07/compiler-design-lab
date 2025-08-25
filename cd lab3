@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <conio.h> // For Turbo C/C++
+
+int main() 
+{ 
+    FILE *file; 
+    char line[1000]; 
+    int insideComment = 0; 
+    int insideString = 0; 
+    int insideCharacter = 0; 
+
+    clrscr(); // For Turbo C/C++
+
+    file = fopen("sample.c", "r"); 
+    if (file == NULL) { 
+        printf("Unable to open the file.\n"); 
+        return 1; 
+    } 
+
+    printf("Valid Control Structures:\n"); 
+
+    while (fgets(line, sizeof(line), file) != NULL) { 
+        for (int i = 0; line[i] != '\0'; i++) { 
+            
+            if (line[i] == '/' && line[i + 1] == '*') { 
+                insideComment = 1; 
+                i++; 
+            } 
+            else if (line[i] == '*' && line[i + 1] == '/') { 
+                insideComment = 0; 
+            } 
+            else if (line[i] == '/' && line[i + 1] == '/') { 
+                break; // Skip line comments 
+            } 
+            else if (line[i] == '"') { 
+                insideString = 1 - insideString; 
+            } 
+            else if (line[i] == '\'') { 
+                insideCharacter = 1 - insideCharacter; 
+            } 
+            else if (!insideComment && !insideString && !insideCharacter) { 
+                
+                if (strncmp(line + i, "for", 3) == 0) { 
+                    printf("For loop: %s\n", line); 
+                    break; 
+                } 
+                else if (strncmp(line + i, "while", 5) == 0) { 
+                    printf("While loop: %s\n", line); 
+                    break; 
+                } 
+                else if (strncmp(line + i, "if", 2) == 0) { 
+                    printf("If statement: %s\n", line); 
+                    break; 
+                } 
+                else if (strncmp(line + i, "else if", 7) == 0) { 
+                    printf("Else-if statement: %s\n", line); 
+                    break; 
+                } 
+                else if (strncmp(line + i, "else", 4) == 0) { 
+                    printf("Else statement: %s\n", line); 
+                    break; 
+                } 
+                else if (strncmp(line + i, "switch", 6) == 0) { 
+                    printf("Switch statement: %s\n", line); 
+                    break; 
+                } 
+                else if (strncmp(line + i, "case", 4) == 0) { 
+                    printf("Case label: %s\n", line); 
+                    break; 
+                } 
+                else if (strncmp(line + i, "default", 7) == 0) { 
+                    printf("Default label: %s\n", line); 
+                    break; 
+                } 
+            } 
+        } 
+    } 
+
+    fclose(file); 
+    getch(); // For Turbo C/C++
+    return 0; 
+}
